@@ -48,9 +48,7 @@ namespace AutoRest.CSharp.Generation.Writers.Tests
 
 #nullable disable
 
-using System;
 using System.Collections.Generic;
-using Azure.Core;
 
 namespace Cadl.TestServer.ReadonlyProperties.Models
 {
@@ -73,16 +71,8 @@ OptionalReadonlyIntList = new List<int>(0).AsReadOnly();
 /// <param name=""requiredReadonlyIntList""> Required readonly int collection. </param>
 /// <param name=""optionalReadonlyStringList""> Optional readonly string collection. </param>
 /// <param name=""optionalReadonlyIntList""> Optional readonly int collection. </param>
-/// <exception cref=""global::System.ArgumentNullException""> <paramref name=""requiredReadonlyString""/>, <paramref name=""optionalReadonlyString""/>, <paramref name=""requiredReadonlyStringList""/>, <paramref name=""requiredReadonlyIntList""/>, <paramref name=""optionalReadonlyStringList""/> or <paramref name=""optionalReadonlyIntList""/> is null. </exception>
 internal RoundTripModel(string requiredReadonlyString,int requiredReadonlyInt,string optionalReadonlyString,int optionalReadonlyInt,global::System.Collections.Generic.IReadOnlyList<string> requiredReadonlyStringList,global::System.Collections.Generic.IReadOnlyList<int> requiredReadonlyIntList,global::System.Collections.Generic.IReadOnlyList<string> optionalReadonlyStringList,global::System.Collections.Generic.IReadOnlyList<int> optionalReadonlyIntList)
 {
-global::Azure.Core.Argument.AssertNotNull(requiredReadonlyString, nameof(requiredReadonlyString));
-global::Azure.Core.Argument.AssertNotNull(optionalReadonlyString, nameof(optionalReadonlyString));
-global::Azure.Core.Argument.AssertNotNull(requiredReadonlyStringList, nameof(requiredReadonlyStringList));
-global::Azure.Core.Argument.AssertNotNull(requiredReadonlyIntList, nameof(requiredReadonlyIntList));
-global::Azure.Core.Argument.AssertNotNull(optionalReadonlyStringList, nameof(optionalReadonlyStringList));
-global::Azure.Core.Argument.AssertNotNull(optionalReadonlyIntList, nameof(optionalReadonlyIntList));
-
 RequiredReadonlyString = requiredReadonlyString;
 RequiredReadonlyInt = requiredReadonlyInt;
 OptionalReadonlyString = optionalReadonlyString;

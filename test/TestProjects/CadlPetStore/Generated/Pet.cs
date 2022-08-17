@@ -5,9 +5,6 @@
 
 #nullable disable
 
-using System;
-using Azure.Core;
-
 namespace CadlPetStore
 {
     public partial class Pet
@@ -20,12 +17,8 @@ namespace CadlPetStore
         /// <param name="name"></param>
         /// <param name="tag"></param>
         /// <param name="age"></param>
-        /// <exception cref="ArgumentNullException"> <paramref name="name"/> or <paramref name="tag"/> is null. </exception>
         internal Pet(string name, string tag, int age)
         {
-            Argument.AssertNotNull(name, nameof(name));
-            Argument.AssertNotNull(tag, nameof(tag));
-
             Name = name;
             Tag = tag;
             Age = age;
