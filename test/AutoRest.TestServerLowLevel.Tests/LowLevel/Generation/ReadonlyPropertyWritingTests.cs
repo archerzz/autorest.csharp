@@ -59,10 +59,10 @@ public partial class RoundTripModel
 /// <summary> Initializes a new instance of RoundTripModel. </summary>
 public RoundTripModel()
 {
-RequiredReadonlyStringList = new List<string>(0);
-RequiredReadonlyIntList = new List<int>(0);
-OptionalReadonlyStringList = new List<string>(0);
-OptionalReadonlyIntList = new List<int>(0);
+RequiredReadonlyStringList = new List<string>(0).AsReadOnly();
+RequiredReadonlyIntList = new List<int>(0).AsReadOnly();
+OptionalReadonlyStringList = new List<string>(0).AsReadOnly();
+OptionalReadonlyIntList = new List<int>(0).AsReadOnly();
 }
 /// <summary> Initializes a new instance of RoundTripModel. </summary>
 /// <param name=""requiredReadonlyString""> Required string, illustrating a readonly reference type property. </param>
