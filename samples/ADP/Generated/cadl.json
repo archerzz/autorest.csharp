@@ -1389,7 +1389,7 @@
       "application/json"
      ],
      "BufferResponse": true,
-     "GenerateConvenienceMethod": false
+     "GenerateConvenienceMethod": true
     },
     {
      "$id": "170",
@@ -1488,7 +1488,7 @@
      "Uri": "",
      "Path": "/discoveries/{discoveryId}",
      "BufferResponse": true,
-     "GenerateConvenienceMethod": false
+     "GenerateConvenienceMethod": true
     },
     {
      "$id": "179",
@@ -1650,7 +1650,7 @@
        "IsErrorResponse": false
       }
      },
-     "GenerateConvenienceMethod": false
+     "GenerateConvenienceMethod": true
     },
     {
      "$id": "196",
@@ -1812,7 +1812,7 @@
        "IsErrorResponse": false
       }
      },
-     "GenerateConvenienceMethod": false
+     "GenerateConvenienceMethod": true
     },
     {
      "$id": "213",
@@ -1974,7 +1974,7 @@
        "IsErrorResponse": false
       }
      },
-     "GenerateConvenienceMethod": false
+     "GenerateConvenienceMethod": true
     }
    ],
    "Protocol": {
@@ -2368,7 +2368,7 @@
       "application/json"
      ],
      "BufferResponse": true,
-     "GenerateConvenienceMethod": false
+     "GenerateConvenienceMethod": true
     },
     {
      "$id": "270",
@@ -2467,7 +2467,7 @@
      "Uri": "",
      "Path": "/uploads/{uploadId}",
      "BufferResponse": true,
-     "GenerateConvenienceMethod": false
+     "GenerateConvenienceMethod": true
     },
     {
      "$id": "279",
@@ -2629,7 +2629,7 @@
        "IsErrorResponse": false
       }
      },
-     "GenerateConvenienceMethod": false
+     "GenerateConvenienceMethod": true
     },
     {
      "$id": "296",
@@ -2791,7 +2791,7 @@
        "IsErrorResponse": false
       }
      },
-     "GenerateConvenienceMethod": false
+     "GenerateConvenienceMethod": true
     },
     {
      "$id": "313",
@@ -2953,7 +2953,7 @@
        "IsErrorResponse": false
       }
      },
-     "GenerateConvenienceMethod": false
+     "GenerateConvenienceMethod": true
     },
     {
      "$id": "330",
@@ -3115,7 +3115,7 @@
        "IsErrorResponse": false
       }
      },
-     "GenerateConvenienceMethod": false
+     "GenerateConvenienceMethod": true
     }
    ],
    "Protocol": {

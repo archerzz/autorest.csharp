@@ -6,7 +6,9 @@
 #nullable disable
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
+using ADP.DataManagement.Ingestion.Discoveries;
 using Azure;
 using Azure.Core;
 using Azure.Core.Pipeline;
@@ -40,6 +42,38 @@ namespace ADP
             ClientDiagnostics = new ClientDiagnostics(options, true);
             _pipeline = HttpPipelineBuilder.Build(options, Array.Empty<HttpPipelinePolicy>(), Array.Empty<HttpPipelinePolicy>(), new ResponseClassifier());
             _apiVersion = options.Version;
+        }
+
+        /// <summary> Creates a new ingestion discovery instance. </summary>
+        /// <param name="discoveryId"> The discovery identifier. </param>
+        /// <param name="discovery"> A discovery resource. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="discoveryId"/> or <paramref name="discovery"/> is null. </exception>
+        /// <exception cref="ArgumentException"> <paramref name="discoveryId"/> is an empty string, and was expected to be non-empty. </exception>
+        public virtual async Task<Response<Discovery>> CreateOrReplaceAsync(string discoveryId, Discovery discovery, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(discoveryId, nameof(discoveryId));
+            Argument.AssertNotNull(discovery, nameof(discovery));
+
+            RequestContext context = FromCancellationToken(cancellationToken);
+            Response response = await CreateOrReplaceAsync(discoveryId, discovery.ToRequestContent(), context).ConfigureAwait(false);
+            return Response.FromValue(Discovery.FromResponse(response), response);
+        }
+
+        /// <summary> Creates a new ingestion discovery instance. </summary>
+        /// <param name="discoveryId"> The discovery identifier. </param>
+        /// <param name="discovery"> A discovery resource. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="discoveryId"/> or <paramref name="discovery"/> is null. </exception>
+        /// <exception cref="ArgumentException"> <paramref name="discoveryId"/> is an empty string, and was expected to be non-empty. </exception>
+        public virtual Response<Discovery> CreateOrReplace(string discoveryId, Discovery discovery, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(discoveryId, nameof(discoveryId));
+            Argument.AssertNotNull(discovery, nameof(discovery));
+
+            RequestContext context = FromCancellationToken(cancellationToken);
+            Response response = CreateOrReplace(discoveryId, discovery.ToRequestContent(), context);
+            return Response.FromValue(Discovery.FromResponse(response), response);
         }
 
         /// <summary> Creates a new ingestion discovery instance. </summary>
@@ -216,6 +250,54 @@ namespace ADP
             {
                 using HttpMessage message = CreateCreateOrReplaceRequest(discoveryId, content, context);
                 return _pipeline.ProcessMessage(message, context);
+            }
+            catch (Exception e)
+            {
+                scope.Failed(e);
+                throw;
+            }
+        }
+
+        /// <summary> Get discovery by ID. </summary>
+        /// <param name="discoveryId"> The discovery identifier. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="discoveryId"/> is null. </exception>
+        /// <exception cref="ArgumentException"> <paramref name="discoveryId"/> is an empty string, and was expected to be non-empty. </exception>
+        public virtual async Task<Response<Discovery>> GetValueAsync(string discoveryId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(discoveryId, nameof(discoveryId));
+
+            using var scope = ClientDiagnostics.CreateScope("DiscoveriesClient.GetValue");
+            scope.Start();
+            try
+            {
+                RequestContext context = FromCancellationToken(cancellationToken);
+                Response response = await GetAsync(discoveryId, context).ConfigureAwait(false);
+                return Response.FromValue(Discovery.FromResponse(response), response);
+            }
+            catch (Exception e)
+            {
+                scope.Failed(e);
+                throw;
+            }
+        }
+
+        /// <summary> Get discovery by ID. </summary>
+        /// <param name="discoveryId"> The discovery identifier. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="discoveryId"/> is null. </exception>
+        /// <exception cref="ArgumentException"> <paramref name="discoveryId"/> is an empty string, and was expected to be non-empty. </exception>
+        public virtual Response<Discovery> GetValue(string discoveryId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(discoveryId, nameof(discoveryId));
+
+            using var scope = ClientDiagnostics.CreateScope("DiscoveriesClient.GetValue");
+            scope.Start();
+            try
+            {
+                RequestContext context = FromCancellationToken(cancellationToken);
+                Response response = Get(discoveryId, context);
+                return Response.FromValue(Discovery.FromResponse(response), response);
             }
             catch (Exception e)
             {
@@ -897,6 +979,17 @@ namespace ADP
             }
             request.Headers.Add("Accept", "application/json");
             return message;
+        }
+
+        private static RequestContext DefaultRequestContext = new RequestContext();
+        internal static RequestContext FromCancellationToken(CancellationToken cancellationToken = default)
+        {
+            if (!cancellationToken.CanBeCanceled)
+            {
+                return DefaultRequestContext;
+            }
+
+            return new RequestContext() { CancellationToken = cancellationToken };
         }
 
         private static ResponseClassifier _responseClassifier200201;

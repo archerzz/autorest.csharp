@@ -20,6 +20,7 @@ namespace ADP.DataManagement.Ingestion.Discoveries {
       "./examples/public/ingestion/discovery/Discovery_CreateOrReplace.json",
       "Creates a new ingestion discovery instance."
     )
+    @OpenAPI.extension("x-ms-convenient-api", true)
     createOrReplace is CustomResourceCreateOrReplace<
       Discovery,
       DiscoveryCreationParameters
@@ -30,6 +31,7 @@ namespace ADP.DataManagement.Ingestion.Discoveries {
       "./examples/public/ingestion/discovery/Discovery_Get.json",
       "Get discovery by ID."
     )
+    @OpenAPI.extension("x-ms-convenient-api", true)
     get is ResourceRead<Discovery>;
 
     #suppress "@azure-tools/cadl-azure-core/use-standard-operations" "ADP data-plane API uses custom LRO response template the LRO actions."
@@ -41,6 +43,7 @@ namespace ADP.DataManagement.Ingestion.Discoveries {
     @extension("x-ms-long-running-operation", true)
     @asyncOperationOptions("location")
     @pollingOperation(ADP.Common.Operations.LongRunningOperationStatusLocation)
+    @OpenAPI.extension("x-ms-convenient-api", true)
     generateSpecialFilesUploadInfo is CustomLongRunningResourceAction<
       Discovery,
       {},
@@ -56,6 +59,7 @@ namespace ADP.DataManagement.Ingestion.Discoveries {
     @extension("x-ms-long-running-operation", true)
     @asyncOperationOptions("location")
     @pollingOperation(ADP.Common.Operations.LongRunningOperationStatusLocation)
+    @OpenAPI.extension("x-ms-convenient-api", true)
     complete is CustomLongRunningResourceAction<
       Discovery,
       {
@@ -73,6 +77,7 @@ namespace ADP.DataManagement.Ingestion.Discoveries {
     @extension("x-ms-long-running-operation", true)
     @asyncOperationOptions("location")
     @pollingOperation(ADP.Common.Operations.LongRunningOperationStatusLocation)
+    @OpenAPI.extension("x-ms-convenient-api", true)
     cancel is CustomLongRunningResourceAction<
       Discovery,
       {

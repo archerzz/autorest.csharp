@@ -6,7 +6,9 @@
 #nullable disable
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
+using ADP.DataManagement.Ingestion.Uploads;
 using Azure;
 using Azure.Core;
 using Azure.Core.Pipeline;
@@ -40,6 +42,38 @@ namespace ADP
             ClientDiagnostics = new ClientDiagnostics(options, true);
             _pipeline = HttpPipelineBuilder.Build(options, Array.Empty<HttpPipelinePolicy>(), Array.Empty<HttpPipelinePolicy>(), new ResponseClassifier());
             _apiVersion = options.Version;
+        }
+
+        /// <summary> Creates a new ingestion upload instance. </summary>
+        /// <param name="uploadId"> The upload resource identifier. </param>
+        /// <param name="upload"> An upload resource. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="uploadId"/> or <paramref name="upload"/> is null. </exception>
+        /// <exception cref="ArgumentException"> <paramref name="uploadId"/> is an empty string, and was expected to be non-empty. </exception>
+        public virtual async Task<Response<Upload>> CreateOrReplaceAsync(string uploadId, Upload upload, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(uploadId, nameof(uploadId));
+            Argument.AssertNotNull(upload, nameof(upload));
+
+            RequestContext context = FromCancellationToken(cancellationToken);
+            Response response = await CreateOrReplaceAsync(uploadId, upload.ToRequestContent(), context).ConfigureAwait(false);
+            return Response.FromValue(Upload.FromResponse(response), response);
+        }
+
+        /// <summary> Creates a new ingestion upload instance. </summary>
+        /// <param name="uploadId"> The upload resource identifier. </param>
+        /// <param name="upload"> An upload resource. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="uploadId"/> or <paramref name="upload"/> is null. </exception>
+        /// <exception cref="ArgumentException"> <paramref name="uploadId"/> is an empty string, and was expected to be non-empty. </exception>
+        public virtual Response<Upload> CreateOrReplace(string uploadId, Upload upload, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(uploadId, nameof(uploadId));
+            Argument.AssertNotNull(upload, nameof(upload));
+
+            RequestContext context = FromCancellationToken(cancellationToken);
+            Response response = CreateOrReplace(uploadId, upload.ToRequestContent(), context);
+            return Response.FromValue(Upload.FromResponse(response), response);
         }
 
         /// <summary> Creates a new ingestion upload instance. </summary>
@@ -224,6 +258,54 @@ namespace ADP
             {
                 using HttpMessage message = CreateCreateOrReplaceRequest(uploadId, content, context);
                 return _pipeline.ProcessMessage(message, context);
+            }
+            catch (Exception e)
+            {
+                scope.Failed(e);
+                throw;
+            }
+        }
+
+        /// <summary> Get discovery by ID. </summary>
+        /// <param name="uploadId"> The upload resource identifier. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="uploadId"/> is null. </exception>
+        /// <exception cref="ArgumentException"> <paramref name="uploadId"/> is an empty string, and was expected to be non-empty. </exception>
+        public virtual async Task<Response<Upload>> GetValueAsync(string uploadId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(uploadId, nameof(uploadId));
+
+            using var scope = ClientDiagnostics.CreateScope("UploadsClient.GetValue");
+            scope.Start();
+            try
+            {
+                RequestContext context = FromCancellationToken(cancellationToken);
+                Response response = await GetAsync(uploadId, context).ConfigureAwait(false);
+                return Response.FromValue(Upload.FromResponse(response), response);
+            }
+            catch (Exception e)
+            {
+                scope.Failed(e);
+                throw;
+            }
+        }
+
+        /// <summary> Get discovery by ID. </summary>
+        /// <param name="uploadId"> The upload resource identifier. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="uploadId"/> is null. </exception>
+        /// <exception cref="ArgumentException"> <paramref name="uploadId"/> is an empty string, and was expected to be non-empty. </exception>
+        public virtual Response<Upload> GetValue(string uploadId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(uploadId, nameof(uploadId));
+
+            using var scope = ClientDiagnostics.CreateScope("UploadsClient.GetValue");
+            scope.Start();
+            try
+            {
+                RequestContext context = FromCancellationToken(cancellationToken);
+                Response response = Get(uploadId, context);
+                return Response.FromValue(Upload.FromResponse(response), response);
             }
             catch (Exception e)
             {
@@ -1088,6 +1170,17 @@ namespace ADP
             }
             request.Headers.Add("Accept", "application/json");
             return message;
+        }
+
+        private static RequestContext DefaultRequestContext = new RequestContext();
+        internal static RequestContext FromCancellationToken(CancellationToken cancellationToken = default)
+        {
+            if (!cancellationToken.CanBeCanceled)
+            {
+                return DefaultRequestContext;
+            }
+
+            return new RequestContext() { CancellationToken = cancellationToken };
         }
 
         private static ResponseClassifier _responseClassifier200201;
