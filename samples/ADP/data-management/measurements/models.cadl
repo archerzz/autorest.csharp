@@ -1,0 +1,618 @@
+import "@cadl-lang/rest";
+
+using Cadl.Http;
+using Cadl.Rest;
+
+namespace ADP.DataManagement.Measurements {
+  enum Clients {
+    MeasurementClient,
+  }
+
+  @doc("A measurement resource")
+  @resource("measurements")
+  model Measurement {
+    @doc("The measurement identifier.")
+    @key
+    measurementId: string;
+
+    @doc("The measurement state")
+    @visibility("read")
+    state?: MeasurementState;
+
+    @doc("The measurement current status")
+    @visibility("read")
+    executionStatus?: MeasurementStateExecutionStatus;
+
+    @doc("The storage account location which contains the measurement")
+    location: string;
+
+    @doc("The UTC time the measurement was ingested at")
+    @visibility("read")
+    ingestTimestampUtc?: zonedDateTime | null;
+    ...CommonResourceEndpoint;
+
+    @doc(" The ID of the external package (for example, the disk which contained data) as specified by the customer upon data ingestion")
+    @visibility("read")
+    externalPackageId?: string | null;
+
+    @doc("ID of the upload process which caused the creation of this measurement")
+    @visibility("read")
+    uploadId?: string | null;
+
+    @doc("ID of the discovery process which caused the creation of this measurement")
+    @visibility("read")
+    discoveryId?: string | null;
+
+    @doc("The UTC time the measurement was recorded at")
+    @visibility("read")
+    recordTimestampUtc?: zonedDateTime | null;
+
+    @doc("The measurement metadata dictionary")
+    metadata: Record<string>;
+
+    @doc("The measurement's last validation result")
+    validationResult: MeasurementValidationResult | null;
+
+    @doc("Indicates if measurement has been deleted")
+    isDeleted: boolean;
+
+    @doc("The measurement's metadata file name")
+    @visibility("read")
+    metadataFileName?: string | null;
+
+    @doc("Information about the measurement's schema")
+    @visibility("read")
+    schemaInfo?: MeasurementSchemaInformation | null;
+  }
+
+  @doc("Change measurement state request parameter")
+  @withOptionalProperties
+  model ChangeMeasurementStateRequestParameters {
+    @doc("Desired measurement state.")
+    state: MeasurementState;
+  }
+
+  model ChangeMeasurementStateRequestCustomizations {
+    parameters: ChangeMeasurementStateRequestParameters;
+    response: {};
+  }
+
+  @withOptionalProperties
+  model MetadataFileUploadInformationResponse {
+    ...CommonResourceEndpoint;
+
+    @doc("""
+    SAS signed URI for uploading new manifest file for the measurement to Azure Storage.
+    This URI expires in 24 hours.
+    """)
+    @visibility("read")
+    @format("uri")
+    fileUploadUri: string;
+  }
+
+  @doc("The URI for downloading the metadata file of the measurement.")
+  @withOptionalProperties
+  model FileDownloadInformationResponse {
+    ...CommonResourceEndpoint;
+
+    @doc("""
+    SAS signed URI for downloading the requested file from Azure Storage.
+    This URI expires in 24 hours.
+    """)
+    @format("uri")
+    @visibility("read")
+    fileDownloadUri?: string;
+  }
+
+  @doc("Request parameters for the complete upload metadata file API")
+  @withOptionalProperties
+  model CompleteUploadMetadataFileRequest {
+    @doc("The ETag of the uploaded metadata file")
+    @visibility("read", "write")
+    pendingFileETag: string;
+  }
+
+  @doc("A wrapper for the List of measurements IDs")
+  @withOptionalProperties
+  model MeasurementListRequestParameters {
+    @doc("The measurement IDs list")
+    @deprecated("use filter expression instead.")
+    measurementIds: string[];
+  }
+
+  model MeasurementListRequestCustomizations {
+    parameters: MeasurementListRequestParameters;
+    response: {};
+  }
+}
+
+model CommonMeasurementQueryPrameters {
+  ...ApiVersionParameter;
+
+  @doc("The measurement identifier.")
+  @key
+  @path
+  measurementId: string;
+}
+
+model CommonDataStreamQueryPrameters {
+  ...CommonMeasurementQueryPrameters;
+
+  @doc("The data stream identifier.")
+  @key
+  @path
+  @segment("dataStreams")
+  dataStreamId: string;
+}
+
+@doc("Internal - the model for internal use")
+@withOptionalProperties
+model CommonMeasurementParameters {
+  @doc("ID of the measurement")
+  @visibility("read")
+  measurementId: string;
+}
+
+@doc("Internal - the model for internal use")
+@withOptionalProperties
+model CommonDataStreamParameters {
+  ...CommonMeasurementParameters;
+
+  @doc("ID of the data stream")
+  @visibility("read")
+  dataStreamId: string;
+}
+
+@doc("A response returned when an asynchronous data stream API endpoint command is initiated")
+@withOptionalProperties
+model AsyncDataStreamOperationResponse {
+  ...CommonDataStreamParameters;
+  ...CommonAsyncOperationResponse;
+}
+
+// TODO: Replace batch operation with singletone
+@doc("A response returned when an asynchronous measurement API endpoint command involving multiple measurements is initiated")
+@withOptionalProperties
+model AsyncMeasurementBatchCommandResponse {
+  @doc("The ID of the initiated operation")
+  @visibility("read")
+  operationId: string;
+  ...CommonResourceEndpoint;
+}
+
+@doc("A response returned when an asynchronous measurement API endpoint command is initiated")
+@withOptionalProperties
+model AsyncMeasurementOperationResponse {
+  ...CommonMeasurementParameters;
+  ...CommonAsyncOperationResponse;
+}
+
+@doc("Data stream creation parameters")
+@withOptionalProperties
+model CreateDerivedDataStreamRequest {
+  @doc("The data stream lineage information specified upon creation")
+  @visibility("read", "write")
+  lineage: DataStreamLineage;
+
+  @doc("The Data stream's list of tags")
+  @visibility("read", "write")
+  tags?: string[] | null;
+}
+
+@doc("Data stream creation parameters")
+model CreateDerivedDataStreamRequestParameters {
+  @doc("The data stream lineage information specified upon creation")
+  @body
+  lineage: DataStreamLineage;
+
+  @doc("The Data stream's list of tags")
+  @body
+  tags?: string[] | null;
+}
+
+@doc("Data stream lineage information")
+@withOptionalProperties
+model DataStreamLineage {
+  @doc("The data stream's metadata")
+  @visibility("read", "write")
+  producerMetadata: Record<string>;
+
+  @doc("The data stream's inputs")
+  @visibility("read", "write")
+  inputs: DataStreamInput[];
+}
+
+model DataStreamInput {
+  @doc("The data stream identifier")
+  @visibility("read", "write")
+  sourceDataStreamId: string | null;
+
+  @doc("Collection of the data stream's channels")
+  @visibility("read", "write")
+  channels?: string[];
+}
+
+@deprecated("TODO: use DataStreamResource instead")
+@withOptionalProperties
+model DataStreamResponse {
+  ...CommonDataStreamParameters;
+  ...CommonResourceEndpoint;
+
+  @doc("The data stream lineage information")
+  @visibility("read", "write")
+  lineage: DataStreamLineage;
+
+  @doc("The data stream list of tags")
+  @visibility("read")
+  tags: string[];
+
+  @doc("The data stream state")
+  @visibility("read")
+  status: DataStreamStatus;
+
+  @doc("The data stream type")
+  @visibility("read")
+  type: DataStreamType;
+
+  @doc("The data stream rolling information")
+  @visibility("read")
+  rollingInformation?: DataStreamRollingInformation | null;
+
+  @doc("""
+  SAS signed URI for downloading the data stream manifest file from Azure Storage.
+  This URI expires in 24 hours.
+  """)
+  @format("uri")
+  @visibility("read")
+  dataStreamManifestFileUri?: string;
+
+  @doc("The list of shards associated with the data stream")
+  @visibility("read")
+  shards?: DataStreamShardAccessInformation[] | null;
+}
+
+@doc("Data stream rolling information")
+@withOptionalProperties
+model DataStreamRollingInformation {
+  @doc("Data stream rolling strategy")
+  @visibility("read")
+  strategy: DataStreamRollingStrategy;
+
+  @doc("Data stream rolling unit")
+  @visibility("read")
+  unit: DataStreamRollingUnit;
+
+  @doc("Data stream rolling value")
+  @visibility("read")
+  value: int32;
+}
+
+@doc("Data stream rolling strategy")
+union DataStreamRollingStrategy {
+  Time: "Time",
+  Size: "Size",
+  Unknown: "Unknown",
+}
+
+@doc("Data stream rolling unit")
+union DataStreamRollingUnit {
+  Seconds: "Seconds",
+  Minutes: "Minutes",
+  kB: "kB",
+  MB: "MB",
+  GB: "GB",
+  Unknown: "Unknown",
+}
+
+@doc("The access infomation to the data stream shard")
+@withOptionalProperties
+model DataStreamShardAccessInformation {
+  @doc("""
+  SAS signed URI for reading the shard folder content from Azure Storage.
+  This URI expires in 24 hours.
+  """)
+  @visibility("read")
+  @format("uri")
+  shardFolderUri: string;
+
+  @doc("""
+  SAS signed URI for reading the shard manifest file from Azure Storage.
+  This URI expires in 24 hours.
+  """)
+  @visibility("read")
+  @format("uri")
+  manifestFileUri: string;
+}
+
+@doc("Represents possible measurement states")
+union MeasurementState {
+  New: "New",
+  Operational: "Operational",
+}
+
+@doc("Data stream state")
+union DataStreamStatus {
+  Created: "Created",
+  Completing: "Completing",
+  Completed: "Completed",
+  Failed: "Failed",
+  Failing: "Failing",
+}
+
+@doc("Data stream type")
+union DataStreamType {
+  System: "System",
+  Raw: "Raw",
+  Derived: "Derived",
+}
+
+@doc("Data stream shards list and relevant metadata")
+@withOptionalProperties
+model DataStreamShardsResponse {
+  ...CommonDataStreamParameters;
+  ...CommonResourceEndpoint;
+
+  @doc("The list of shards associated with the data stream")
+  @visibility("read")
+  shards: DataStreamShardAccessInformation[];
+}
+
+@doc("Information about a file")
+model DerivedDataStreamFileInformation {
+  @doc("The file name as provided by the client")
+  @visibility("read", "write")
+  clientFileName: string | null;
+
+  @doc("The file recording UTC timestamp as provided by the client")
+  @visibility("read", "write")
+  recordingTimestampUtc?: zonedDateTime;
+}
+
+@doc("A response providing a download URI for a measurement's metadata file")
+@withOptionalProperties
+model FileDownloadInformationResponse {
+  ...CommonResourceEndpoint;
+
+  @doc("""
+  SAS signed URI for downloading the requested file from Azure Storage.
+  This URI expires in 24 hours.
+  """)
+  @format("uri")
+  @visibility("read")
+  fileDownloadUri?: string;
+}
+
+@doc("Data stream search by tags parameters")
+@withOptionalProperties
+model FindDataStreamByTagsRequest {
+  @doc("The list of tags to search for")
+  tags: string[];
+}
+
+@doc("Data stream search by type parameters")
+@withOptionalProperties
+model FindDataStreamByTypeRequest {
+  @doc("The type to search for")
+  @visibility("read", "write")
+  type: DataStreamType;
+}
+
+@doc("Processing objects graph")
+model ProcessingObjectsGraphRequest {
+  @doc("The processing objects")
+  @visibility("read", "write")
+  processingObjects: ProcessingObject[];
+
+  @doc("The processing objects edges")
+  @visibility("read", "write")
+  edges: ProcessingObjectEdge[];
+}
+
+@doc("Processing object node information in a processing objects Graph")
+model ProcessingObject {
+  @doc("The processing object metadata")
+  @visibility("read", "write")
+  metadata: Record<string> | null;
+
+  @doc("A request unique ID to identify processing objects in graph")
+  @visibility("read", "write")
+  id: string;
+}
+
+@doc("Processing objects edge")
+@withOptionalProperties
+model ProcessingObjectEdge {
+  @doc("The source processing object ID")
+  sourceId: string;
+
+  @doc("The target processing object ID")
+  targetId: string;
+}
+
+@doc("A wrapper for the List of measurements IDs")
+@withOptionalProperties
+model MeasurementIdList {
+  @doc("The measurement IDs list")
+  measurementIds: string[];
+}
+
+@doc("Measurement metadata - new entries descriptor")
+@withOptionalProperties
+model MeasurementMetadataNewEntries {
+  @doc("The entries to be updated")
+  entries: MeasurementMetadataNewEntry[];
+}
+
+@doc("Measurement metadata new entry information")
+model MeasurementMetadataNewEntry {
+  ...CommonKeyValuePair;
+}
+
+@doc("Measurement metadata update entries")
+@withOptionalProperties
+model MeasurementMetadataUpdateEntries {
+  @doc("The entries to be updated")
+  entries: MeasurementMetadataUpdateEntry[];
+}
+
+@doc("Measurement metadata entry update information")
+@withOptionalProperties
+model MeasurementMetadataUpdateEntry {
+  @doc("The key")
+  @visibility("read")
+  key: string;
+
+  @doc("The old value")
+  @visibility("read")
+  oldValue: string;
+
+  @doc("The new value")
+  @visibility("read")
+  newValue: string;
+}
+
+@deprecated("TODO: use Measurement instead")
+@doc("A measurement information")
+@withOptionalProperties
+model MeasurementResponse {
+  ...CommonMeasurementParameters;
+
+  @doc("The measurement state")
+  @visibility("read")
+  state?: MeasurementState;
+
+  @doc("The measurement current execution status.")
+  @visibility("read")
+  executionStatus?: MeasurementStateExecutionStatus;
+
+  @doc("The storage account location which contains the measurement")
+  @visibility("read")
+  location: string;
+
+  @doc("The UTC time the measurement was ingested at")
+  @visibility("read")
+  ingestTimestampUtc?: zonedDateTime | null;
+  ...CommonResourceEndpoint;
+
+  @doc(" The ID of the external package (for example, the disk which contained data) as specified by the customer upon data ingestion")
+  @visibility("read")
+  externalPackageId?: string | null;
+
+  @doc("ID of the upload process which caused the creation of this measurement")
+  @visibility("read")
+  uploadId?: string | null;
+
+  @doc("ID of the discovery process which caused the creation of this measurement")
+  @visibility("read")
+  discoveryId?: string | null;
+
+  @doc("The UTC time the measurement was recorded at")
+  @visibility("read")
+  recordTimestampUtc?: zonedDateTime | null;
+
+  @doc("The measurement metadata dictionary")
+  @visibility("read")
+  metadata: Record<string>;
+
+  @doc("The measurement's last validation result")
+  @visibility("read")
+  validationResult: MeasurementValidationResult | null;
+
+  @doc("Indicates if measurement has been deleted")
+  @visibility("read")
+  isDeleted: boolean;
+
+  @doc("The measurement's metadata file name")
+  @visibility("read")
+  metadataFileName?: string | null;
+
+  @doc("Information about the measurement's schema")
+  @visibility("read")
+  schemaInfo?: MeasurementSchemaInformation | null;
+}
+
+@doc("The result of evaluation of measurement validation rule")
+@withOptionalProperties
+model MeasurementRuleValidationResult {
+  @doc("Measurement validation rule category")
+  @visibility("read")
+  ruleCategory: string;
+
+  @doc("Measurement validation rule name")
+  @visibility("read")
+  ruleName: string;
+
+  @doc("Measurement validation rule metadata")
+  @visibility("read")
+  details: Record<string>;
+
+  @doc("Measurement validation rule evaluation result")
+  @visibility("read")
+  validationPassed: boolean;
+
+  @doc("Measurement validation error message")
+  @visibility("read")
+  validationError?: string | null;
+}
+
+@doc("An error that occurred while trying to fetch a measurement's schema file")
+union MeasurementSchemaErrorCode {
+  SchemaUriExtractionFailed: "SchemaUriExtractionFailed",
+  CustomerDefaultSchemaUriCouldNotBeResolved: "CustomerDefaultSchemaUriCouldNotBeResolved",
+  SchemaFetchingFailed: "SchemaFetchingFailed",
+  SavingSchemaToStorageFailed: "SavingSchemaToStorageFailed",
+  SchemaUriNotAllowedByTenant: "SchemaUriNotAllowedByTenant",
+  Unknown: "Unknown",
+}
+
+@doc("Information about a measurement's schema file")
+@withOptionalProperties
+model MeasurementSchemaInformation {
+  schemaFileName?: string | null;
+  problemDetails?: MeasurementSchemaProblemDetails | null;
+}
+
+// TODO: use standard error handling mechanism if possible
+@doc("Details of an error that occurred while trying to fetch a measurement's schema file")
+@withOptionalProperties
+model MeasurementSchemaProblemDetails {
+  ...ProblemDetails<MeasurementSchemaErrorCode>;
+}
+
+@doc("The measurement's execution status")
+union MeasurementStateExecutionStatus {
+  Running: "Running",
+  Succeeded: "Succeeded",
+  Failed: "Failed",
+  Deleting: "Deleting",
+}
+
+@doc("The measurement's validation result")
+@withOptionalProperties
+model MeasurementValidationResult {
+  @doc("The measurement's validity")
+  @visibility("read")
+  validationPassed: boolean;
+
+  @doc("The measurement's rule validation results")
+  @visibility("read")
+  results: MeasurementRuleValidationResult[];
+}
+
+@doc("Data stream file upload parameters")
+@withOptionalProperties
+model UploadDerivedDataStreamFilesRequest {
+  @doc("The information of the files that are to be uploaded")
+  @visibility("read", "write")
+  files: DerivedDataStreamFileInformation[];
+}
+
+@doc("Data stream file upload request parameters")
+@withOptionalProperties
+model UploadDerivedDataStreamFilesResponse {
+  ...CommonDataStreamParameters;
+  ...CommonResourceEndpoint;
+
+  @doc("Per-file upload instructions")
+  files: FileUploadInformation[];
+}

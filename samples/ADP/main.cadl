@@ -1,0 +1,14 @@
+import "./common";
+import "./data-management";
+import "./compute";
+
+import "@cadl-lang/rest";
+import "@cadl-lang/openapi";
+
+@serviceTitle("Autonomous Development Platform")
+@serviceVersion("2022-11-30-preview")
+// @service({
+//   title: "Autonomous Development Platform",
+//   version: "2022-11-30-preview",
+// })
+namespace ADP;
