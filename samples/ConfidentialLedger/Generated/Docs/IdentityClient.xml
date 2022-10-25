@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <members>
+    <member name="GetLedgerIdentityAsync(String,RequestContext)">
+<example>
+This sample shows how to call GetLedgerIdentityAsync with required parameters and parse the result.
+<code><![CDATA[
+var endpoint = new Uri("<https://my-service.azure.com>");
+var client = new IdentityClient(endpoint);
+
+Response response = await client.GetLedgerIdentityAsync("<ledgerId>");
+
+JsonElement result = JsonDocument.Parse(response.ContentStream).RootElement;
+Console.WriteLine(result.GetProperty("ledgerId").ToString());
+Console.WriteLine(result.GetProperty("ledgerTlsCertificate").ToString());
+]]></code>
+</example>
+<remarks>
+Gets a LedgerIdentityInformation.
+
+Below is the JSON schema for the response payload.
+
+Response Body:
+
+Schema for <c>LedgerIdentityInformation</c>:
+<code>{
+  ledgerId: string, # Required.
+  ledgerTlsCertificate: string, # Required.
+}
+</code>
+
+</remarks>
+    </member>
+    <member name="GetLedgerIdentity(String,RequestContext)">
+<example>
+This sample shows how to call GetLedgerIdentity with required parameters and parse the result.
+<code><![CDATA[
+var endpoint = new Uri("<https://my-service.azure.com>");
+var client = new IdentityClient(endpoint);
+
+Response response = client.GetLedgerIdentity("<ledgerId>");
+
+JsonElement result = JsonDocument.Parse(response.ContentStream).RootElement;
+Console.WriteLine(result.GetProperty("ledgerId").ToString());
+Console.WriteLine(result.GetProperty("ledgerTlsCertificate").ToString());
+]]></code>
+</example>
+<remarks>
+Gets a LedgerIdentityInformation.
+
+Below is the JSON schema for the response payload.
+
+Response Body:
+
+Schema for <c>LedgerIdentityInformation</c>:
+<code>{
+  ledgerId: string, # Required.
+  ledgerTlsCertificate: string, # Required.
+}
+</code>
+
+</remarks>
+    </member>
+  </members>
+</doc>
