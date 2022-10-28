@@ -8,7 +8,7 @@ using System.Text.Json.Serialization;
 
 namespace AutoRest.CSharp.Common.Input
 {
-    internal sealed class CadlInputEnumTypeValueConverter : JsonConverter<InputEnumTypeValue>
+    internal abstract class CadlInputEnumTypeValueConverter<T> : JsonConverter<InputEnumTypeValue>
     {
         private readonly CadlReferenceHandler _referenceHandler;
 
@@ -23,16 +23,16 @@ namespace AutoRest.CSharp.Common.Input
         public override void Write(Utf8JsonWriter writer, InputEnumTypeValue value, JsonSerializerOptions options)
             => throw new NotSupportedException("Writing not supported");
 
-        public static InputEnumTypeValue CreateEnumTypeValue(ref Utf8JsonReader reader, string? id, string? name, JsonSerializerOptions options, ReferenceResolver resolver)
+        protected InputEnumTypeValue CreateEnumTypeValue(ref Utf8JsonReader reader, string? id, string? name, JsonSerializerOptions options, ReferenceResolver resolver)
         {
             var isFirstProperty = id == null;
-            string? value = null;
+            T? value = default;
             string? description = null;
             while (reader.TokenType != JsonTokenType.EndObject)
             {
                 var isKnownProperty = reader.TryReadReferenceId(ref isFirstProperty, ref id)
                     || reader.TryReadString(nameof(InputEnumTypeValue.Name), ref name)
-                    || reader.TryReadString(nameof(InputEnumTypeValue.Value), ref value)
+                    || TryReadValue(ref reader, out value)
                     || reader.TryReadString(nameof(InputEnumTypeValue.Description), ref description);
 
                 if (!isKnownProperty)
@@ -45,12 +45,35 @@ namespace AutoRest.CSharp.Common.Input
 
             value = value ?? throw new JsonException("EnumValue must have value");
 
-            var enumValue = new InputEnumTypeValue(name, value, description);
+            var enumValue = BuildEnumTypeValue(name, value, description);
             if (id != null)
             {
                 resolver.AddReference(id, enumValue);
             }
             return enumValue;
         }
+
+        protected bool TryReadValue(ref Utf8JsonReader reader, out T? value)
+        {
+            value = default;
+            if (reader.TokenType != JsonTokenType.PropertyName)
+            {
+                throw new JsonException();
+            }
+
+            if (reader.GetString() != nameof(InputEnumTypeValue.Value))
+            {
+                return false;
+            }
+
+            reader.Read();
+            value = ReadValue(ref reader);
+            reader.Read();
+            return true;
+
+        }
+
+        protected abstract T ReadValue(ref Utf8JsonReader reader);
+        protected abstract InputEnumTypeValue BuildEnumTypeValue(string name, T value, string? description);
     }
 }

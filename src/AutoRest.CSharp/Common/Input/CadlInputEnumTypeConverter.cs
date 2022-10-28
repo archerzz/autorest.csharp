@@ -33,7 +33,7 @@ namespace AutoRest.CSharp.Common.Input
             string? usageString = null;
             bool isExtendable = false;
             InputPrimitiveType? valueType = null;
-            IReadOnlyList<InputEnumTypeValue>? allowedValues = null;
+            Memory<byte>? allowedValues = null;
             while (reader.TokenType != JsonTokenType.EndObject)
             {
                 var isKnownProperty = reader.TryReadReferenceId(ref isFirstProperty, ref id)
@@ -44,7 +44,7 @@ namespace AutoRest.CSharp.Common.Input
                     || reader.TryReadString(nameof(InputEnumType.Usage), ref usageString)
                     || reader.TryReadBoolean(nameof(InputEnumType.IsExtensible), ref isExtendable)
                     || reader.TryReadPrimitiveType(nameof(InputEnumType.EnumValueType), ref valueType)
-                    || reader.TryReadWithConverter(nameof(InputEnumType.AllowedValues), options, ref allowedValues);
+                    || reader.TryReadRawArray(nameof(InputEnumType.AllowedValues), ref allowedValues);
 
                 if (!isKnownProperty)
                 {
@@ -66,17 +66,48 @@ namespace AutoRest.CSharp.Common.Input
                 Enum.TryParse<InputModelTypeUsage>(usageString, ignoreCase: true, out usage);
             }
 
-            if (allowedValues == null || allowedValues.Count == 0)
+            if (allowedValues == null || !allowedValues.HasValue || allowedValues.Value.Length == 0)
             {
                 throw new JsonException("Enum must have at least one value");
             }
 
-            var enumType = new InputEnumType(name, ns, accessibility, description, usage, valueType ?? InputPrimitiveType.Int32, allowedValues, isExtendable);
+            valueType ??= InputPrimitiveType.Int32;
+            var enumType = new InputEnumType(name, ns, accessibility, description, usage, valueType, ParseValues(allowedValues.Value, valueType, (CadlReferenceHandler)options.ReferenceHandler!), isExtendable);
             if (id != null)
             {
                 resolver.AddReference(id, enumType);
             }
             return enumType;
+        }
+
+        private static IReadOnlyList<InputEnumTypeValue> ParseValues(Memory<byte> allowedValues, InputPrimitiveType valueType, CadlReferenceHandler referenceHandler)
+        {
+            var options = new JsonSerializerOptions
+            {
+                ReferenceHandler = referenceHandler,
+                AllowTrailingCommas = true
+            };
+
+
+            if (valueType == InputPrimitiveType.Int32)
+            {
+                options.Converters.Add(new CadlInputEnumTypeIntegerValueConverter(referenceHandler));
+            }
+            else if (valueType == InputPrimitiveType.Float32)
+            {
+                options.Converters.Add(new CadlInputEnumTypeFloatValueConverter(referenceHandler));
+            }
+            else if (valueType == InputPrimitiveType.String)
+            {
+                options.Converters.Add(new CadlInputEnumTypeStringValueConverter(referenceHandler));
+            }
+            else
+            {
+                throw new JsonException($"Not supported enum value type: {valueType}");
+            }
+
+            var parsedValues = JsonSerializer.Deserialize(allowedValues.Span, typeof(IReadOnlyList<InputEnumTypeValue>), options);
+            return (IReadOnlyList<InputEnumTypeValue>)(parsedValues ?? throw new JsonException($"Not supported enum value type: {valueType}"));
         }
     }
 }

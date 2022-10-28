@@ -386,10 +386,10 @@ namespace AutoRest.CSharp.Common.Input
             IsExtensible: isExtensible
         );
 
-        private static InputEnumTypeValue CreateEnumValue(ChoiceValue choiceValue) => new(
+        private static InputEnumTypeValue CreateEnumValue(ChoiceValue choiceValue) => new InputEnumTypeStringValue(
             Name: choiceValue.Language.Default.Name,
             Description: choiceValue.Language.Default.Description,
-            Value: choiceValue.Value
+            StringValue: choiceValue.Value
         );
 
         private static RequestLocation GetRequestLocation(RequestParameter requestParameter) => requestParameter.In switch

@@ -101,7 +101,7 @@ namespace AutoRest.CSharp.Generation.Writers.Tests
         }
 
         private static readonly InputEnumType ExtensibleEnumType = new InputEnumType("TranslationLanguageValues", "Cadl.TestServer.EnumPropertiesBasic", "public", "The supported languages to translate input text into.", InputModelTypeUsage.RoundTrip, InputPrimitiveType.String,
-                    new List<InputEnumTypeValue>() {
+                    new List<InputEnumTypeStringValue>() {
                         new("English", "English", "Translate to English"),
                         new("Spanish", "Spanish", "Translate to Spanish"),
                         new("Mandarin", "Mandarin", "Translate to Mandarin"),
@@ -109,7 +109,7 @@ namespace AutoRest.CSharp.Generation.Writers.Tests
                     }, true);
 
         private static readonly InputEnumType FixedEnumType = new InputEnumType("DayOfTheWeek", "Cadl.TestServer.EnumPropertiesBasic", "public", "Represents the days of the week using a standard, non-string enum.", InputModelTypeUsage.RoundTrip, InputPrimitiveType.String,
-                    new List<InputEnumTypeValue>() {
+                    new List<InputEnumTypeStringValue>() {
                         new("Monday", "Monday", null),
                         new("Tuesday", "Tuesday", null),
                         new("Wednesday", "Wednesday", null),

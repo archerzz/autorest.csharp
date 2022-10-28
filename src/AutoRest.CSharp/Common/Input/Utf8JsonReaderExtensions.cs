@@ -2,6 +2,9 @@
 // Licensed under the MIT License. See License.txt in the project root for license information.
 
 using System;
+using System.Buffers;
+using System.Collections.Generic;
+using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -84,6 +87,40 @@ namespace AutoRest.CSharp.Common.Input
 
             reader.Read();
             value = CadlInputTypeConverter.CreatePrimitiveType(reader.GetString(), false) ?? throw new JsonException();
+            reader.Read();
+            return true;
+        }
+
+        public static bool TryReadRawArray(this ref Utf8JsonReader reader, string propertyName, ref Memory<byte>? value)
+        {
+            if (reader.TokenType != JsonTokenType.PropertyName)
+            {
+                throw new JsonException();
+            }
+
+            if (reader.GetString() != propertyName)
+            {
+                return false;
+            }
+
+            do
+            {
+                reader.Read();
+            }
+            while (reader.TokenType != JsonTokenType.StartArray);
+
+            using (var buffer = new MemoryStream())
+            {
+                while (reader.TokenType != JsonTokenType.EndArray)
+                {
+                    buffer.Write(reader.HasValueSequence ? reader.ValueSequence.ToArray() : reader.ValueSpan.ToArray());
+                    reader.Read();
+                }
+                buffer.Write(reader.HasValueSequence ? reader.ValueSequence.ToArray() : reader.ValueSpan.ToArray());
+
+                value = new Memory<byte>(buffer.ToArray());
+            }
+
             reader.Read();
             return true;
         }
