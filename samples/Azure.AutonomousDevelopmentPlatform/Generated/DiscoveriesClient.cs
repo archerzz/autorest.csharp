@@ -11,7 +11,7 @@ using Azure;
 using Azure.Core;
 using Azure.Core.Pipeline;
 
-namespace ADP
+namespace AutonomousDevelopmentPlatform
 {
     // Data plane generated client. The Discoveries service client.
     /// <summary> The Discoveries service client. </summary>

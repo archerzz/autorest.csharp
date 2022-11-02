@@ -1,6 +1,6 @@
 {
   "OutputFolder": ".",
-  "Namespace": "ADP",
+  "Namespace": "AutonomousDevelopmentPlatform",
   "LibraryName": "AutonomousDevelopmentPlatform",
   "SharedSourceFolders": [
     "../../../node_modules/@autorest/csharp/Generator.Shared",

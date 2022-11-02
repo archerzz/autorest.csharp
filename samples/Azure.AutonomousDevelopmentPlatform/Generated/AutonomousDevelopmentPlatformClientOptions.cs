@@ -8,7 +8,7 @@
 using System;
 using Azure.Core;
 
-namespace ADP
+namespace AutonomousDevelopmentPlatform
 {
     /// <summary> Client options for AutonomousDevelopmentPlatform library clients. </summary>
     public partial class AutonomousDevelopmentPlatformClientOptions : ClientOptions

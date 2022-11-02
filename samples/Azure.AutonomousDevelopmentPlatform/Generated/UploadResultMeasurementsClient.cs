@@ -13,7 +13,7 @@ using Azure;
 using Azure.Core;
 using Azure.Core.Pipeline;
 
-namespace ADP
+namespace AutonomousDevelopmentPlatform
 {
     // Data plane generated client. The UploadResultMeasurements service client.
     /// <summary> The UploadResultMeasurements service client. </summary>

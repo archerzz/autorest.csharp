@@ -13,7 +13,7 @@ using Azure;
 using Azure.Core;
 using Azure.Core.Pipeline;
 
-namespace ADP
+namespace AutonomousDevelopmentPlatform
 {
     // Data plane generated client. The DiscoveryResultUploads service client.
     /// <summary> The DiscoveryResultUploads service client. </summary>
