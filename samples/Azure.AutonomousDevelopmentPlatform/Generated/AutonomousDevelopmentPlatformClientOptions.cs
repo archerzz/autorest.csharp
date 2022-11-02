@@ -10,8 +10,8 @@ using Azure.Core;
 
 namespace ADP
 {
-    /// <summary> Client options for ADP library clients. </summary>
-    public partial class ADPClientOptions : ClientOptions
+    /// <summary> Client options for AutonomousDevelopmentPlatform library clients. </summary>
+    public partial class AutonomousDevelopmentPlatformClientOptions : ClientOptions
     {
         private const ServiceVersion LatestVersion = ServiceVersion.V2022_11_30_Preview;
 
@@ -24,8 +24,8 @@ namespace ADP
 
         internal string Version { get; }
 
-        /// <summary> Initializes new instance of ADPClientOptions. </summary>
-        public ADPClientOptions(ServiceVersion version = LatestVersion)
+        /// <summary> Initializes new instance of AutonomousDevelopmentPlatformClientOptions. </summary>
+        public AutonomousDevelopmentPlatformClientOptions(ServiceVersion version = LatestVersion)
         {
             Version = version switch
             {

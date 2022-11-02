@@ -38,7 +38,7 @@ namespace ADP
         /// <summary> Initializes a new instance of UploadResultMeasurementsClient. </summary>
         /// <param name="credential"> A credential used to authenticate to an Azure Service. </param>
         /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
-        public UploadResultMeasurementsClient(TokenCredential credential) : this(credential, new ADPClientOptions())
+        public UploadResultMeasurementsClient(TokenCredential credential) : this(credential, new AutonomousDevelopmentPlatformClientOptions())
         {
         }
 
@@ -46,10 +46,10 @@ namespace ADP
         /// <param name="credential"> A credential used to authenticate to an Azure Service. </param>
         /// <param name="options"> The options for configuring the client. </param>
         /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
-        public UploadResultMeasurementsClient(TokenCredential credential, ADPClientOptions options)
+        public UploadResultMeasurementsClient(TokenCredential credential, AutonomousDevelopmentPlatformClientOptions options)
         {
             Argument.AssertNotNull(credential, nameof(credential));
-            options ??= new ADPClientOptions();
+            options ??= new AutonomousDevelopmentPlatformClientOptions();
 
             ClientDiagnostics = new ClientDiagnostics(options, true);
             _tokenCredential = credential;
