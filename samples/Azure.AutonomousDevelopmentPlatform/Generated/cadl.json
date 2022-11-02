@@ -40,7 +40,7 @@
    ],
    "IsExtensible": true,
    "IsNullable": false,
-   "Usage": "RoundTrip"
+   "Usage": "Output"
   },
   {
    "$id": "8",
@@ -100,7 +100,7 @@
    ],
    "IsExtensible": true,
    "IsNullable": false,
-   "Usage": "RoundTrip"
+   "Usage": "Output"
   },
   {
    "$id": "17",
@@ -130,7 +130,7 @@
    ],
    "IsExtensible": true,
    "IsNullable": false,
-   "Usage": "RoundTrip"
+   "Usage": "Output"
   },
   {
    "$id": "21",
@@ -202,7 +202,7 @@
    ],
    "IsExtensible": true,
    "IsNullable": false,
-   "Usage": "RoundTrip"
+   "Usage": "Output"
   },
   {
    "$id": "32",
@@ -238,7 +238,7 @@
    ],
    "IsExtensible": true,
    "IsNullable": false,
-   "Usage": "RoundTrip"
+   "Usage": "Output"
   }
  ],
  "Models": [
@@ -248,7 +248,7 @@
    "Namespace": "ADP.Common.Operations",
    "Description": "Standard Azure LRO response headers.",
    "IsNullable": false,
-   "Usage": "None",
+   "Usage": "Output",
    "Properties": [
     {
      "$id": "38",
@@ -288,7 +288,7 @@
       "Namespace": "Azure.Core.Foundations",
       "Description": "The error object.",
       "IsNullable": false,
-      "Usage": "None",
+      "Usage": "Output",
       "Properties": [
        {
         "$id": "43",
@@ -363,7 +363,7 @@
          "Namespace": "Azure.Core.Foundations",
          "Description": "An object containing more specific information about the error. As per Microsoft One API guidelines - https://github.com/Microsoft/api-guidelines/blob/vNext/Guidelines.md#7102-error-condition-responses.",
          "IsNullable": false,
-         "Usage": "None",
+         "Usage": "Output",
          "Properties": [
           {
            "$id": "53",
@@ -433,7 +433,7 @@
    "Namespace": "ADP.DataManagement.Ingestion.Discoveries",
    "Description": "Discovery resource creation parameters.",
    "IsNullable": false,
-   "Usage": "None",
+   "Usage": "Input",
    "Properties": [
     {
      "$id": "59",
@@ -458,7 +458,7 @@
    "Namespace": "ADP.DataManagement.Ingestion.Discoveries",
    "Description": "A discovery resource.",
    "IsNullable": false,
-   "Usage": "None",
+   "Usage": "Output",
    "Properties": [
     {
      "$id": "62",
@@ -525,7 +525,7 @@
    "Namespace": "ADP.DataManagement.Ingestion.Discoveries",
    "Description": "Discovery long running operation response.",
    "IsNullable": false,
-   "Usage": "None",
+   "Usage": "Output",
    "Properties": [
     {
      "$id": "70",
@@ -602,7 +602,7 @@
        "Namespace": "ADP.DataManagement.Ingestion.Discoveries",
        "Description": "A discovery special file resource.",
        "IsNullable": false,
-       "Usage": "None",
+       "Usage": "Output",
        "Properties": [
         {
          "$id": "79",
@@ -684,7 +684,7 @@
        "Namespace": "ADP.DataManagement.Ingestion.Discoveries",
        "Description": "A discovery upload resource.",
        "IsNullable": false,
-       "Usage": "None",
+       "Usage": "Output",
        "Properties": [
         {
          "$id": "89",
@@ -765,7 +765,7 @@
    "Namespace": "ADP.DataManagement.Ingestion.Uploads",
    "Description": "Upload resource creation parameters",
    "IsNullable": false,
-   "Usage": "None",
+   "Usage": "Input",
    "Properties": [
     {
      "$id": "98",
@@ -805,7 +805,7 @@
    "Namespace": "ADP.DataManagement.Ingestion.Uploads",
    "Description": "An upload resource.",
    "IsNullable": false,
-   "Usage": "None",
+   "Usage": "Output",
    "Properties": [
     {
      "$id": "103",
@@ -887,7 +887,7 @@
    "Namespace": "ADP.DataManagement.Ingestion.Uploads",
    "Description": "The long running operation response",
    "IsNullable": false,
-   "Usage": "None",
+   "Usage": "Output",
    "Properties": [
     {
      "$id": "113",
@@ -964,7 +964,7 @@
        "Namespace": "ADP.DataManagement.Ingestion.Uploads",
        "Description": "Special file resource.",
        "IsNullable": false,
-       "Usage": "None",
+       "Usage": "Output",
        "Properties": [
         {
          "$id": "122",
@@ -1046,7 +1046,7 @@
        "Namespace": "ADP.DataManagement.Ingestion.Uploads",
        "Description": "Data file resource.",
        "IsNullable": false,
-       "Usage": "None",
+       "Usage": "Output",
        "Properties": [
         {
          "$id": "132",
@@ -1128,7 +1128,7 @@
        "Namespace": "ADP.DataManagement.Ingestion.Uploads",
        "Description": "A measurement resource created as result of the upload.",
        "IsNullable": false,
-       "Usage": "None",
+       "Usage": "Output",
        "Properties": [
         {
          "$id": "142",
