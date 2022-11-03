@@ -1349,7 +1349,7 @@
        "IsErrorResponse": false
       }
      },
-     "GenerateConvenienceMethod": false
+     "GenerateConvenienceMethod": true
     }
    ],
    "Protocol": {
@@ -1517,7 +1517,7 @@
       "application/json"
      ],
      "BufferResponse": true,
-     "GenerateConvenienceMethod": false
+     "GenerateConvenienceMethod": true
     },
     {
      "$id": "184",
@@ -1616,7 +1616,7 @@
      "Uri": "",
      "Path": "/discoveries/{discoveryId}",
      "BufferResponse": true,
-     "GenerateConvenienceMethod": false
+     "GenerateConvenienceMethod": true
     },
     {
      "$id": "193",
@@ -1778,7 +1778,7 @@
        "IsErrorResponse": false
       }
      },
-     "GenerateConvenienceMethod": false
+     "GenerateConvenienceMethod": true
     },
     {
      "$id": "210",
@@ -1940,7 +1940,7 @@
        "IsErrorResponse": false
       }
      },
-     "GenerateConvenienceMethod": false
+     "GenerateConvenienceMethod": true
     }
    ],
    "Protocol": {
@@ -2053,7 +2053,7 @@
       "NextLinkName": "nextLink",
       "ItemName": "value"
      },
-     "GenerateConvenienceMethod": false
+     "GenerateConvenienceMethod": true
     },
     {
      "$id": "239",
@@ -2194,7 +2194,7 @@
        "IsErrorResponse": false
       }
      },
-     "GenerateConvenienceMethod": false
+     "GenerateConvenienceMethod": true
     }
    ],
    "Protocol": {
@@ -2307,7 +2307,7 @@
       "NextLinkName": "nextLink",
       "ItemName": "value"
      },
-     "GenerateConvenienceMethod": false
+     "GenerateConvenienceMethod": true
     }
    ],
    "Protocol": {
@@ -2475,7 +2475,7 @@
       "application/json"
      ],
      "BufferResponse": true,
-     "GenerateConvenienceMethod": false
+     "GenerateConvenienceMethod": true
     },
     {
      "$id": "282",
@@ -2574,7 +2574,7 @@
      "Uri": "",
      "Path": "/uploads/{uploadId}",
      "BufferResponse": true,
-     "GenerateConvenienceMethod": false
+     "GenerateConvenienceMethod": true
     },
     {
      "$id": "291",
@@ -2736,7 +2736,7 @@
        "IsErrorResponse": false
       }
      },
-     "GenerateConvenienceMethod": false
+     "GenerateConvenienceMethod": true
     },
     {
      "$id": "308",
@@ -2898,7 +2898,7 @@
        "IsErrorResponse": false
       }
      },
-     "GenerateConvenienceMethod": false
+     "GenerateConvenienceMethod": true
     }
    ],
    "Protocol": {
@@ -3011,7 +3011,7 @@
       "NextLinkName": "nextLink",
       "ItemName": "value"
      },
-     "GenerateConvenienceMethod": false
+     "GenerateConvenienceMethod": true
     },
     {
      "$id": "337",
@@ -3152,7 +3152,7 @@
        "IsErrorResponse": false
       }
      },
-     "GenerateConvenienceMethod": false
+     "GenerateConvenienceMethod": true
     }
    ],
    "Protocol": {
@@ -3265,7 +3265,7 @@
       "NextLinkName": "nextLink",
       "ItemName": "value"
      },
-     "GenerateConvenienceMethod": false
+     "GenerateConvenienceMethod": true
     },
     {
      "$id": "364",
@@ -3406,7 +3406,7 @@
        "IsErrorResponse": false
       }
      },
-     "GenerateConvenienceMethod": false
+     "GenerateConvenienceMethod": true
     }
    ],
    "Protocol": {
@@ -3519,7 +3519,7 @@
       "NextLinkName": "nextLink",
       "ItemName": "value"
      },
-     "GenerateConvenienceMethod": false
+     "GenerateConvenienceMethod": true
     }
    ],
    "Protocol": {
